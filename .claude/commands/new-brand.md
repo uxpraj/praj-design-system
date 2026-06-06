@@ -8,24 +8,65 @@ Ask the user for the following. Ask all questions in ONE message, numbered:
 
 1. **App name** — what is this design system for? (e.g. "fitness-app", "finance-dashboard")
 2. **Primary color** — hex code or color name (e.g. "#0A84FF", "blue", "emerald green")
-3. **Font** — preferred font from Google Fonts or system font (e.g. "Inter", "Poppins", "SF Pro")
-4. **Design language brief** — describe the vibe in 2–3 sentences. Mention any references (e.g. "Apple HIG — clean, minimal, generous whitespace, sharp corners. Think iOS Settings app.")
-5. **Border radius feel** — sharp / medium / very rounded?
-6. **Shadow intensity** — none / subtle / medium / strong?
+3. **Font** — preferred font from Google Fonts or system font (e.g. "Inter", "Poppins", "SF Pro"). Say "decide for me" to let Claude pick based on the style.
+4. **Overall look and feel** — describe the style direction in your own words. Examples:
+   - "Modern minimalistic — lots of whitespace, clean lines, nothing unnecessary"
+   - "Urban company — bold, high contrast, professional but not corporate"
+   - "Playful consumer app — friendly, rounded, colourful, approachable"
+   - "Premium luxury — dark surfaces, gold accents, refined typography"
+   - "Apple HIG — clean system UI, SF Pro, iOS patterns"
+   - "Material You — expressive, dynamic colour, Android patterns"
+5. **Any references** — apps, websites, or brands whose visual style you like (optional but helpful). e.g. "Linear, Stripe, Notion, Apple Settings, Airbnb"
+6. **Border radius feel** — sharp / medium / very rounded? Or say "decide for me"
+7. **Shadow intensity** — none / subtle / medium / strong? Or say "decide for me"
 
 Wait for the user to answer before proceeding.
 
 ## Step 2 — Plan the changes
 
-Based on the inputs, decide:
+### Translate style direction into design decisions
 
-- **Colors** — derive a full token set (primary-high, primary-subtle, primary-muted, primary-disabled) from the given primary color. Keep neutral, semantic (error/success/warning/info) and surface tokens unless the brief suggests otherwise.
-- **Typography** — map the chosen font to the existing token roles (heading → display/title, base → body/label). If SF Pro is chosen, use system font stack.
-- **Border radius** — sharp = (4/6/8/12/16), medium = (8/12/16/20/24), very rounded = (16/20/24/28/36/1000).
-- **Shadows** — adjust subtle/medium/strong opacity and radius to match the brief intensity.
-- **Components to rewrite** — identify which of the 35 components need visual changes beyond tokens. Any component whose structure, layout, or interaction pattern should change based on the design language.
+Use this mapping to interpret the user's look and feel description:
 
-Summarise your plan to the user in a clear table and ask for confirmation before generating.
+**Modern minimalistic**
+→ Generous spacing (increase spacing scale by ~25%), thin borders (1px), very subtle shadows or none, neutral-dominant palette, clean geometric font (Inter, DM Sans), medium-sharp radius, restrained use of primary color
+
+**Urban / company / professional**
+→ High contrast, strong typography weight (semibold/bold used more), structured layout, medium spacing, defined borders, medium shadows, neutral-forward palette with one strong accent, fonts like Inter or Neue Haas Grotesk
+
+**Playful / consumer / friendly**
+→ Very rounded corners, vibrant saturated primary, heavier shadows, expressive font (Poppins, Nunito), more color in components (colored backgrounds not just borders), generous padding
+
+**Premium / luxury**
+→ Dark surface tokens (near-black backgrounds), muted/desaturated primary, tight refined spacing, elegant serif or thin sans font, very subtle shadows, gold/warm accent consideration
+
+**Apple HIG / iOS**
+→ System font (SF Pro), radius 10-14px for controls, sheet-style modals, no heavy borders (use backgrounds instead), very subtle shadows, blue system primary unless overridden, native feel
+
+**Material You / Android**
+→ Rounded corners (16-28px), dynamic color tinting on surfaces, prominent FAB, bottom sheet patterns, Roboto or Google Sans font, elevation-heavy shadows
+
+**Enterprise / data-heavy**
+→ Dense spacing (reduce spacing scale), structured grids, conservative color (blue primary), clear typographic hierarchy, minimal decoration, sharp-medium radius
+
+If the description doesn't match a known pattern exactly, synthesise from the closest matches. Use references (question 5) to refine — e.g. "Linear" = sharp, minimal, dark-capable. "Airbnb" = rounded, warm, friendly.
+
+### Decide on each system
+
+- **Colors** — derive a full token set (primary-high, primary-subtle, primary-muted, primary-disabled) from the given primary color. Consider whether neutral tokens should stay gray or shift warmer/cooler to match the style. Keep semantic tokens (error/success/warning/info) unless brief suggests otherwise.
+- **Typography** — if user said "decide for me", pick the font that best fits the style direction. Map chosen font to token roles (heading → display/title, base → body/label).
+- **Border radius** — if user said "decide for me", pick from the style mapping above.
+- **Shadows** — if user said "decide for me", pick from the style mapping above.
+- **Spacing density** — adjust spacing tokens if style calls for it (minimalistic = more space, enterprise = less space).
+- **Components to rewrite** — identify which of the 35 components need visual changes beyond tokens.
+
+Summarise your plan to the user in a clear table showing:
+- Style direction interpreted as
+- Each token system: what changes and why
+- Components that will be rewritten
+- Components that stay the same
+
+Ask for confirmation before generating.
 
 ## Step 3 — Create the new project
 
